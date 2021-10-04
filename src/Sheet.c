@@ -1,7 +1,7 @@
 /*
 	sgs_server
 	File:/src/Sheet.c
-	Date:2021.10.02
+	Date:2021.10.03
 	By MIT License.
 	Copyright (c) 2021 sgs developers.All rights reserved.
 */
@@ -182,4 +182,26 @@ void sheet_move(int32_t id,uint32_t x,uint32_t y)
 	Sheet *sheet = gSheetCtl->sheets + id;
 	sheet->x = x;
 	sheet->y = y;
+}
+
+uint32_t sheet_height(int32_t id)
+{
+	return get_height(id);
+}
+
+void sheet_updown(int32_t id,uint32_t height)
+{
+	uint32_t now = get_height(id);
+	if (now > height) {		// move down
+		Sheet *sheet = gSheetCtl->sorted[now];
+		for (uint32_t i = height;i < now;i++)
+			gSheetCtl->sorted[i + 1] = gSheetCtl->sorted[i];
+		gSheetCtl->sorted[height] = sheet;
+	} else if (now < height) {		// move up
+		Sheet *sheet = gSheetCtl->sorted[now];
+		for (uint32_t i = now;i < height;i++)
+			gSheetCtl->sorted[i] = gSheetCtl->sorted[i + 1];
+		gSheetCtl->sorted[height] = sheet;
+	}
+	return;
 }
